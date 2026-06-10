@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="meta-title">Article — SaaS Pulse Media</title>
+  <meta name="description" id="meta-desc" content="">
+  <meta property="og:title" id="og-title" content="">
+  <meta property="og:description" id="og-desc" content="">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="SaaS Pulse Media">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/images/favicon.png">
+  <style>
+    .progress-bar{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:200;transition:width .1s linear;width:0%}
+    .share-row{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap}
+    .share-btn{padding:8px 16px;border-radius:var(--r);font-size:.75rem;font-weight:600;border:1px solid var(--border);background:var(--white);color:var(--ink);cursor:pointer;transition:.15s;font-family:var(--sans)}
+    .share-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+    @media(max-width:700px){.related-grid{grid-template-columns:1fr}}
+    .breadcrumb{font-family:var(--mono);font-size:.62rem;color:rgba(253,252,250,.4);margin-bottom:16px;display:flex;align-items:center;gap:6px}
+    .breadcrumb a{color:rgba(253,252,250,.4);transition:.15s}
+    .breadcrumb a:hover{color:rgba(253,252,250,.8)}
+    .breadcrumb span{opacity:.4}
+    .toc-toggle{display:none}
+    @media(max-width:900px){
+      .toc-toggle{display:block;width:100%;padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:.8rem;font-weight:600;margin-bottom:20px;text-align:left;font-family:var(--sans);color:var(--ink)}
+      .post-toc{display:none;position:static;margin-bottom:20px}
+      .post-toc.open{display:block}
+    }
+    .reading-progress{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:32px}
+    .reading-progress-bar{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+    .reading-progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s}
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress-bar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <span class="logo-mark">SaaS<span>Pulse</span></span>
+      <span class="logo-tag">Media</span>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog.html" class="active">Blog</a>
+      <a href="/comparisons.html">Comparisons</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/blog.html" class="nav-cta">Browse Articles</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Post header -->
+<div class="post-header" id="post-header">
+  <div class="post-header-inner">
+    <div class="breadcrumb">
+      <a href="/">Home</a><span>/</span>
+      <a href="/blog.html">Blog</a><span>/</span>
+      <span id="bc-cat"></span>
+    </div>
+    <div class="post-cat" id="post-cat"></div>
+    <h1 class="post-title" id="post-title">Loading…</h1>
+    <p class="post-subtitle" id="post-subtitle"></p>
+    <div class="post-byline">
+      <span>✍ <span id="post-author">SaaS Pulse Media</span></span>
+      <span>📅 <span id="post-date"></span></span>
+      <span>⏱ <span id="post-read"></span> min read</span>
+      <span id="post-score-badge"></span>
+    </div>
+  </div>
+</div>
+
+<!-- Post body -->
+<div class="post-layout" id="post-layout">
+  <article class="post-content" id="post-content">
+    <div class="reading-progress">
+      <span>Reading progress</span>
+      <div class="reading-progress-bar"><div class="reading-progress-fill" id="read-fill"></div></div>
+      <span id="read-pct">0%</span>
+    </div>
+    <!-- Article body rendered here -->
+  </article>
+
+  <aside>
+    <button class="toc-toggle" onclick="toggleToc()">☰ Table of Contents</button>
+    <div class="post-toc" id="post-toc">
+      <div class="post-toc-title">Contents</div>
+      <ul id="toc-list"></ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-card" style="margin-top:16px">
+      <div class="sidebar-title">Share</div>
+      <div class="share-row">
+        <button class="share-btn" onclick="shareX()">𝕏 Share</button>
+        <button class="share-btn" onclick="shareLinkedIn()">in LinkedIn</button>
+        <button class="share-btn" onclick="copyLink()">🔗 Copy link</button>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="newsletter-widget" style="margin-top:16px">
+      <div class="newsletter-title">Enjoyed this?</div>
+      <p class="newsletter-sub">Get twice-weekly SaaS insights straight to your inbox.</p>
+      <form class="newsletter-form" onsubmit="sub(event)">
+        <input class="newsletter-input" type="email" placeholder="your@email.com" required>
+        <button class="newsletter-submit">Subscribe Free →</button>
+      </form>
+    </div>
+  </aside>
+</div>
+
+<!-- Key Insight -->
+<div id="key-insight-section" style="display:none;max-width:760px;margin:0 auto;padding:0 24px 40px">
+  <div class="key-insight">
+    <div class="key-insight-label">Key Insight</div>
+    <div class="key-insight-text" id="key-insight-text"></div>
+  </div>
+</div>
+
+<!-- Tags -->
+<div id="tags-section" style="max-width:760px;margin:0 auto;padding:0 24px 60px">
+  <div class="post-tags" id="post-tags"></div>
+</div>
+
+<!-- Related Articles -->
+<section class="section section-tinted" id="related-section" style="display:none">
+  <div class="section-inner">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Keep reading</div>
+        <h2 class="section-title">Related <em>articles</em></h2>
+      </div>
+      <a href="/blog.html" class="view-all">View all</a>
+    </div>
+    <div class="related-grid" id="related-grid"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-mark">SaaS<span>Pulse</span></span></div>
+        <p>Expert reviews, comparisons, and insights on the tools powering modern businesses.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Content</div>
+        <ul class="footer-links">
+          <li><a href="/blog.html">All Articles</a></li>
+          <li><a href="/comparisons.html">Comparisons</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Site</div>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 SaaS Pulse Media. All rights reserved.</span></div>
+    <div class="affiliate-notice"><strong style="color:rgba(253,252,250,.5)">Affiliate Disclosure:</strong> Some links are affiliate links. We may earn a commission at no extra cost to you.</div>
+  </div>
+</footer>
+
+<script>
+// ── Load the correct post based on URL slug
+const slug = location.pathname.split('/').pop().replace('.html','');
+
+async function loadPost() {
+  let post = null;
+  try {
+    const res = await fetch('/data/posts.json');
+    const all = await res.json();
+    post = all.find(p => p.slug === slug);
+    if (post) renderPost(post, all);
+    else show404();
+  } catch(e) { show404(); }
+}
+
+function renderPost(p, all) {
+  // Meta
+  document.getElementById('meta-title').textContent = `${p.title} — SaaS Pulse Media`;
+  document.getElementById('meta-desc').content = p.description || '';
+  document.getElementById('og-title').content = p.title || '';
+  document.getElementById('og-desc').content = p.description || '';
+
+  // Header
+  document.getElementById('bc-cat').textContent = p.category || 'Article';
+  document.getElementById('post-cat').textContent = p.category || '';
+  document.getElementById('post-title').textContent = p.title || '';
+  document.getElementById('post-subtitle').textContent = p.description || '';
+  document.getElementById('post-author').textContent = p.author || 'SaaS Pulse Media';
+  document.getElementById('post-date').textContent = p.date
+    ? new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+    : '';
+
+  const words = (p.body||'').split(/\s+/).length;
+  const readTime = Math.max(1, Math.round(words/200));
+  document.getElementById('post-read').textContent = readTime;
+
+  // Body — convert markdown-ish to HTML
+  const html = markdownToHtml(p.body || '');
+  const content = document.getElementById('post-content');
+  content.innerHTML = content.querySelector('.reading-progress').outerHTML + html;
+
+  // Key insight
+  if (p.key_insight) {
+    document.getElementById('key-insight-section').style.display = 'block';
+    document.getElementById('key-insight-text').textContent = p.key_insight;
+  }
+
+  // Tags
+  if (p.tags?.length) {
+    document.getElementById('post-tags').innerHTML =
+      p.tags.map(t => `<a href="/blog.html" class="tag">#${esc(t)}</a>`).join('');
+  }
+
+  // TOC
+  buildToc();
+
+  // Related posts
+  const related = all.filter(a => a.slug !== p.slug && a.category === p.category).slice(0,3);
+  if (related.length) {
+    document.getElementById('related-section').style.display = 'block';
+    document.getElementById('related-grid').innerHTML = related.map(r => {
+      const d = r.date ? new Date(r.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+      return `<article class="article-card">
+        <div class="card-image"><div class="card-image-placeholder">${catIcon(r.category)}</div></div>
+        <div class="card-body">
+          <div class="card-cat">${r.category||''}</div>
+          <a href="/posts/${r.slug}.html" class="card-title">${esc(r.title)}</a>
+          <p class="card-excerpt">${esc(r.description||(r.body||'').substring(0,120))}</p>
+          <div class="card-meta"><span>${d}</span><a href="/posts/${r.slug}.html" class="card-read">Read →</a></div>
+        </div>
+      </article>`;
+    }).join('');
+  }
+}
+
+// Lightweight markdown → HTML converter
+function markdownToHtml(md) {
+  if (!md) return '<p>Content coming soon.</p>';
+  let html = esc(md);
+  // Unescape for processing
+  html = md;
+  const lines = html.split('\n');
+  const out = [];
+  let inList = false;
+  let listType = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+
+    // Headings
+    if (/^### (.+)/.test(line)) { if(inList){out.push(`</${listType}>`);inList=false;} out.push(`<h3 id="h-${slugify(line.replace(/^### /,''))}">${inline(line.replace(/^### /,''))}</h3>`); continue; }
+    if (/^## (.+)/.test(line))  { if(inList){out.push(`</${listType}>`);inList=false;} out.push(`<h2 id="h-${slugify(line.replace(/^## /,''))}">${inline(line.replace(/^## /,''))}</h2>`); continue; }
+    if (/^# (.+)/.test(line))   { if(inList){out.push(`</${listType}>`);inList=false;} out.push(`<h2 id="h-${slugify(line.replace(/^# /,''))}">${inline(line.replace(/^# /,''))}</h2>`); continue; }
+
+    // Blockquote
+    if (/^> (.+)/.test(line)) { if(inList){out.push(`</${listType}>`);inList=false;} out.push(`<blockquote>${inline(line.replace(/^> /,''))}</blockquote>`); continue; }
+
+    // Unordered list
+    if (/^[-*] (.+)/.test(line)) {
+      if (!inList || listType!=='ul') { if(inList)out.push(`</${listType}>`); out.push('<ul>'); inList=true; listType='ul'; }
+      out.push(`<li>${inline(line.replace(/^[-*] /,''))}</li>`); continue;
+    }
+    // Ordered list
+    if (/^\d+\. (.+)/.test(line)) {
+      if (!inList || listType!=='ol') { if(inList)out.push(`</${listType}>`); out.push('<ol>'); inList=true; listType='ol'; }
+      out.push(`<li>${inline(line.replace(/^\d+\. /,''))}</li>`); continue;
+    }
+
+    // Close list
+    if (inList && line.trim() === '') { out.push(`</${listType}>`); inList=false; }
+
+    // Horizontal rule
+    if (/^---+$/.test(line.trim())) { out.push('<hr style="border:none;border-top:1px solid var(--border);margin:2em 0">'); continue; }
+
+    // Empty line = paragraph break
+    if (line.trim() === '') { out.push(''); continue; }
+
+    // Normal paragraph
+    if (!inList) out.push(`<p>${inline(line)}</p>`);
+  }
+  if (inList) out.push(`</${listType}>`);
+  return out.join('\n');
+}
+
+function inline(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    // Re-allow our own tags
+    .replace(/&lt;(strong|em|code|a|\/strong|\/em|\/code|\/a)([^&]*)&gt;/g,'<$1$2>')
+    .replace(/href=&quot;/g,'href="').replace(/&quot;&gt;/g,'">');
+}
+
+function buildToc() {
+  const headings = document.querySelectorAll('.post-content h2, .post-content h3');
+  if (headings.length < 2) { document.getElementById('post-toc').style.display='none'; return; }
+  const list = document.getElementById('toc-list');
+  list.innerHTML = [...headings].map(h => {
+    const indent = h.tagName==='H3' ? 'style="padding-left:14px"' : '';
+    return `<li ${indent}><a href="#${h.id}">${h.textContent}</a></li>`;
+  }).join('');
+  // TOC scroll spy
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const link = list.querySelector(`a[href="#${e.target.id}"]`);
+      if (link) link.classList.toggle('active', e.isIntersecting);
+    });
+  }, { rootMargin: '-10% 0px -80% 0px' });
+  headings.forEach(h => observer.observe(h));
+}
+
+function toggleToc() {
+  document.getElementById('post-toc').classList.toggle('open');
+}
+
+// Reading progress
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('post-content');
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const total = el.offsetHeight - window.innerHeight;
+  const scrolled = Math.max(0, Math.min(100, Math.round((-rect.top / total) * 100)));
+  document.getElementById('progress-bar').style.width = scrolled + '%';
+  document.getElementById('read-fill').style.width = scrolled + '%';
+  document.getElementById('read-pct').textContent = scrolled + '%';
+});
+
+function shareX() {
+  const url = encodeURIComponent(location.href);
+  const text = encodeURIComponent(document.getElementById('post-title').textContent + ' via @SaasPulseMedia');
+  window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+}
+function shareLinkedIn() {
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(location.href)}`, '_blank');
+}
+function copyLink() {
+  navigator.clipboard.writeText(location.href).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '🔗 Copy link', 2000);
+  });
+}
+function sub(e) { e.preventDefault(); e.target.innerHTML='<div style="text-align:center;font-weight:600;color:white">✓ Subscribed!</div>'; }
+function show404() {
+  document.getElementById('post-title').textContent = 'Article not found';
+  document.getElementById('post-subtitle').textContent = 'This article may have moved or been removed.';
+}
+function catIcon(cat){const i={'SEO Tools':'🔍','CRM':'🤝','Email Marketing':'📧','AI Writing':'✍️','AI Tools for Business':'🤖','Digital Marketing Tips':'📣','Productivity Guides':'⚡','Project Management':'📋','SaaS Tool Reviews':'⭐','SEO Strategies':'📈'};return i[cat]||'📊';}
+function slugify(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+loadPost();
+</script>
+</body>
+</html>

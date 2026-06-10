@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — SaaS Pulse Media</title>
+  <meta name="description" content="Expert SaaS reviews, comparisons, and insights. Browse all articles across SEO, CRM, email marketing, AI tools, and more.">
+  <link rel="canonical" href="https://saaspulsemedia.com/blog.html">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/images/favicon.png">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <span class="logo-mark">SaaS<span>Pulse</span></span>
+      <span class="logo-tag">Media</span>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog.html" class="active">Blog</a>
+      <a href="/comparisons.html">Comparisons</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/blog.html" class="nav-cta">Browse Articles</a>
+    </nav>
+  </div>
+</header>
+
+<div class="blog-header">
+  <div class="blog-header-inner">
+    <h1 class="blog-header-title">All Articles</h1>
+    <p class="blog-header-sub">Expert SaaS reviews, comparisons and insights — updated twice a week</p>
+  </div>
+</div>
+
+<!-- Filter bar -->
+<div class="filter-bar">
+  <div class="filter-bar-inner" id="filter-bar">
+    <button class="filter-btn active" data-cat="all" onclick="filterPosts('all', this)">All</button>
+  </div>
+</div>
+
+<div class="blog-layout">
+  <main class="blog-main">
+    <!-- Search bar -->
+    <div style="margin-bottom:24px;position:relative">
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search articles…"
+        oninput="searchPosts(this.value)"
+        style="width:100%;padding:11px 16px 11px 40px;border:1px solid var(--border);border-radius:var(--r);font-size:.85rem;font-family:var(--sans);outline:none;transition:.2s;background:var(--white);color:var(--ink)"
+        onfocus="this.style.borderColor='var(--accent)'"
+        onblur="this.style.borderColor='var(--border)'"
+      >
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.9rem">⌕</span>
+      <span id="search-count" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.65rem;color:var(--muted)"></span>
+    </div>
+
+    <div id="posts-grid" class="articles-grid wide"></div>
+    <div id="pagination" style="display:flex;gap:6px;justify-content:center;margin-top:32px;flex-wrap:wrap"></div>
+  </main>
+
+  <aside class="blog-sidebar">
+    <!-- Newsletter -->
+    <div class="newsletter-widget">
+      <div class="newsletter-title">Stay in the loop</div>
+      <p class="newsletter-sub">Twice-weekly SaaS insights straight to your inbox. No spam, ever.</p>
+      <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+        <input class="newsletter-input" type="email" placeholder="your@email.com" required>
+        <button class="newsletter-submit" type="submit">Subscribe Free →</button>
+      </form>
+    </div>
+
+    <!-- Categories -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Categories</div>
+      <ul class="sidebar-cats" id="sidebar-cats"></ul>
+    </div>
+
+    <!-- Top articles -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Most Read</div>
+      <div id="sidebar-top"></div>
+    </div>
+
+    <!-- Tags -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Popular Tags</div>
+      <div id="sidebar-tags" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    </div>
+  </aside>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-mark">SaaS<span>Pulse</span></span></div>
+        <p>Expert reviews, comparisons, and insights on the tools powering modern businesses.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Content</div>
+        <ul class="footer-links">
+          <li><a href="/blog.html">All Articles</a></li>
+          <li><a href="/comparisons.html">Comparisons</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Site</div>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 SaaS Pulse Media. All rights reserved.</span>
+    </div>
+    <div class="affiliate-notice">
+      <strong style="color:rgba(253,252,250,.5)">Affiliate Disclosure:</strong>
+      Some links on this site are affiliate links. We may earn a commission at no extra cost to you.
+    </div>
+  </div>
+</footer>
+
+<script>
+const PER_PAGE = 12;
+let ALL_POSTS = [];
+let FILTERED = [];
+let CURRENT_PAGE = 1;
+let ACTIVE_CAT = 'all';
+let SEARCH_QUERY = '';
+
+async function init() {
+  try {
+    const res = await fetch('/data/posts.json');
+    ALL_POSTS = await res.json();
+  } catch(e) {
+    ALL_POSTS = getSamplePosts();
+  }
+  buildFilterBar();
+  buildSidebar();
+  // Check URL param for category
+  const params = new URLSearchParams(location.search);
+  if (params.get('cat')) filterPosts(params.get('cat'), null);
+  else applyFilters();
+}
+
+function buildFilterBar() {
+  const cats = [...new Set(ALL_POSTS.map(p => p.category).filter(Boolean))].sort();
+  const bar = document.getElementById('filter-bar');
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.cat = slug(c);
+    btn.textContent = c;
+    btn.onclick = () => filterPosts(slug(c), btn);
+    bar.appendChild(btn);
+  });
+}
+
+function buildSidebar() {
+  // Categories with counts
+  const counts = {};
+  ALL_POSTS.forEach(p => { const c = p.category||'General'; counts[c]=(counts[c]||0)+1; });
+  document.getElementById('sidebar-cats').innerHTML = Object.entries(counts)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([c,n])=>`<li><a href="/blog.html?cat=${slug(c)}" onclick="filterPosts('${slug(c)}',null);return false">${c}</a><span>${n}</span></li>`)
+    .join('');
+
+  // Top 5 posts
+  document.getElementById('sidebar-top').innerHTML = ALL_POSTS.slice(0,5).map(p=>`
+    <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <a href="/post.html?slug=${p.slug}" style="font-size:.8rem;font-weight:600;color:var(--ink);line-height:1.4;display:block;transition:color .15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink)'">${esc(p.title)}</a>
+      <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:3px">${p.category||''}</div>
+    </div>
+  `).join('');
+
+  // Tags
+  const tagCounts = {};
+  ALL_POSTS.forEach(p=>(p.tags||[]).forEach(t=>{tagCounts[t]=(tagCounts[t]||0)+1}));
+  document.getElementById('sidebar-tags').innerHTML = Object.entries(tagCounts)
+    .sort((a,b)=>b[1]-a[1]).slice(0,20)
+    .map(([t])=>`<a href="#" class="tag" onclick="searchPosts('${esc(t)}');document.getElementById('search-input').value='${esc(t)}';return false">${esc(t)}</a>`)
+    .join('');
+}
+
+function filterPosts(cat, btn) {
+  ACTIVE_CAT = cat;
+  SEARCH_QUERY = '';
+  document.getElementById('search-input').value = '';
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === cat || (cat==='all' && b.dataset.cat==='all'));
+  });
+  if (btn) {
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  CURRENT_PAGE = 1;
+  applyFilters();
+}
+
+function searchPosts(q) {
+  SEARCH_QUERY = q.toLowerCase().trim();
+  CURRENT_PAGE = 1;
+  applyFilters();
+}
+
+function applyFilters() {
+  FILTERED = ALL_POSTS.filter(p => {
+    const catMatch = ACTIVE_CAT === 'all' || slug(p.category||'') === ACTIVE_CAT;
+    const searchMatch = !SEARCH_QUERY ||
+      (p.title||'').toLowerCase().includes(SEARCH_QUERY) ||
+      (p.description||'').toLowerCase().includes(SEARCH_QUERY) ||
+      (p.body||'').toLowerCase().includes(SEARCH_QUERY) ||
+      (p.tags||[]).some(t=>t.toLowerCase().includes(SEARCH_QUERY));
+    return catMatch && searchMatch;
+  });
+  const countEl = document.getElementById('search-count');
+  countEl.textContent = FILTERED.length !== ALL_POSTS.length ? `${FILTERED.length} results` : '';
+  renderGrid();
+  renderPagination();
+}
+
+function renderGrid() {
+  const el = document.getElementById('posts-grid');
+  const start = (CURRENT_PAGE-1)*PER_PAGE;
+  const slice = FILTERED.slice(start, start+PER_PAGE);
+  if (!slice.length) {
+    el.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);font-family:var(--mono);font-size:.8rem">No articles found.</div>`;
+    return;
+  }
+  el.innerHTML = slice.map(p => {
+    const date = p.date ? new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+    const words = (p.body||'').split(/\s+/).length;
+    const read = Math.max(1,Math.round(words/200));
+    return `
+    <article class="article-card">
+      <div class="card-image">
+        ${p.image?`<img src="${p.image}" alt="${esc(p.title)}" loading="lazy">`:`<div class="card-image-placeholder">${catIcon(p.category)}</div>`}
+      </div>
+      <div class="card-body">
+        <div class="card-cat">${p.category||'General'}</div>
+        <a href="/post.html?slug=${p.slug}" class="card-title">${esc(p.title)}</a>
+        <p class="card-excerpt">${esc(p.description||(p.body||'').substring(0,160))}</p>
+        <div class="card-meta">
+          <span class="card-date">${date}</span>
+          <a href="/post.html?slug=${p.slug}" class="card-read">${read} min →</a>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+function renderPagination() {
+  const el = document.getElementById('pagination');
+  const pages = Math.ceil(FILTERED.length/PER_PAGE);
+  if (pages<=1){el.innerHTML='';return;}
+  let html='';
+  if(CURRENT_PAGE>1) html+=`<button onclick="goPage(${CURRENT_PAGE-1})" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--white);font-size:.78rem;cursor:pointer">← Prev</button>`;
+  for(let i=1;i<=pages;i++){
+    html+=`<button onclick="goPage(${i})" style="padding:7px 12px;border:1px solid ${i===CURRENT_PAGE?'var(--accent)':'var(--border)'};border-radius:var(--r);background:${i===CURRENT_PAGE?'var(--accent)':'var(--white)'};color:${i===CURRENT_PAGE?'white':'var(--ink)'};font-size:.78rem;cursor:pointer;font-weight:${i===CURRENT_PAGE?'600':'400'}">${i}</button>`;
+  }
+  if(CURRENT_PAGE<pages) html+=`<button onclick="goPage(${CURRENT_PAGE+1})" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--white);font-size:.78rem;cursor:pointer">Next →</button>`;
+  el.innerHTML=html;
+}
+
+function goPage(p){CURRENT_PAGE=p;renderGrid();renderPagination();window.scrollTo({top:0,behavior:'smooth'});}
+
+function catIcon(cat){
+  const icons={'SEO Tools':'🔍','CRM':'🤝','Email Marketing':'📧','AI Writing':'✍️','AI Tools for Business':'🤖','Digital Marketing Tips':'📣','Productivity Guides':'⚡','Project Management':'📋','SaaS Tool Reviews':'⭐','SEO Strategies':'📈'};
+  return icons[cat]||'📊';
+}
+
+function subscribeNewsletter(e){
+  e.preventDefault();
+  e.target.innerHTML='<div style="text-align:center;font-weight:600">✓ You\'re subscribed!</div>';
+}
+
+function getSamplePosts(){
+  return [{slug:'getting-started',title:'Getting Started with SaaS Pulse Media',category:'SaaS Tool Reviews',description:'Welcome to SaaS Pulse Media — your independent guide to the best SaaS tools.',date:new Date().toISOString(),tags:['saas','reviews'],body:'Welcome to SaaS Pulse Media.'}];
+}
+function slug(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+init();
+</script>
+</body>
+</html>
