@@ -527,7 +527,7 @@ async function claude(system, user, tokens=1400) {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':STATE.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({ model:'claude-sonnet-4-5', max_tokens:tokens, system, messages:[{role:'user',content:user}] })
+    body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:tokens, system, messages:[{role:'user',content:user}] })
   });
   if(!r.ok) { const e=await r.json().catch(()=>({})); throw new Error(`API ${r.status}: ${e.error?.message||r.statusText}`); }
   return (await r.json()).content[0].text;
@@ -535,9 +535,24 @@ async function claude(system, user, tokens=1400) {
 
 async function claudeJSON(system, user, tokens=1200) {
   const t = await claude(system+'\n\nCRITICAL: Reply ONLY with valid JSON. No markdown fences, no preamble.', user, tokens);
-  const c = t.replace(/^```(?:json)?\n?/m,'').replace(/\n?```$/m,'').trim();
-  try { return JSON.parse(c); }
-  catch(e) { const m=c.match(/\{[\s\S]*\}/); if(m) return JSON.parse(m[0]); throw new Error('JSON parse failed: '+c.substring(0,200)); }
+  let c = t.trim().replace(/^```(?:json)?\s*/,'').replace(/\s*```$/,'').trim();
+  // Try direct parse
+  try { return JSON.parse(c); } catch(e1) {}
+  // Try extracting first JSON object
+  const m = c.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('No JSON found in response: '+c.substring(0,200));
+  try { return JSON.parse(m[0]); } catch(e2) {}
+  // Sanitise: escape unescaped newlines inside string values
+  try {
+    let fix = m[0];
+    // Replace literal newlines inside quoted strings with \n
+    fix = fix.replace(/"((?:[^"\\]|\\.)*)"/g, (match, inner) => {
+      return '"' + inner.replace(/\n/g,'\\n').replace(/\r/g,'\\r').replace(/\t/g,'\\t') + '"';
+    });
+    return JSON.parse(fix);
+  } catch(e3) {
+    throw new Error('JSON parse failed: '+c.substring(0,300));
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -640,27 +655,57 @@ async function stepWrite() {
   log('QYREN',`► Writing: "${STATE.lastDecision.topic}"…`,'qyren');
 
   const kw = (STATE.lastDecision.target_keywords||[]).join(', ');
-  const article = await claudeJSON(
-    `You are QYREN writing for SaaS Pulse Media — a professional SaaS review publication. Write expert, practical, SEO-optimised content in ${STATE.style} style. Articles must be useful to real software buyers. Length: ${STATE.articleLength} words.`,
-    `Write a complete article:
 
+  // Step A: get metadata as JSON (small, safe to parse)
+  const meta = await claudeJSON(
+    `You are QYREN, content strategist for SaaS Pulse Media. Return only JSON metadata for a SaaS article.`,
+    `Generate metadata for this article:
 Topic: ${STATE.lastDecision.topic}
 Category: ${STATE.lastDecision.category}
 Angle: ${STATE.lastDecision.angle}
-Target keywords (use naturally): ${kw}
-Search intent: ${STATE.lastDecision.search_intent}
+Keywords: ${kw}
 
-Return JSON:
+Return JSON (no body text):
 {
-  "title": "SEO-optimised article title (include primary keyword)",
+  "title": "SEO-optimised article title with primary keyword",
   "subtitle": "Engaging 1-sentence subtitle",
-  "body": "Complete article (${STATE.articleLength} words). Use ## for H2 headings, ### for H3. Include numbered or bulleted lists. Be specific, cite realistic figures, name real tools. End with a clear verdict or recommendation.",
-  "meta_description": "SEO meta description 150-160 chars with primary keyword",
+  "meta_description": "150-160 char SEO meta description",
   "tags": ["tag1","tag2","tag3","tag4"],
-  "key_insight": "The single most important takeaway (1 sentence)"
+  "key_insight": "The single most important takeaway (1 sentence)",
+  "slug_base": "url-friendly-slug-with-keyword"
 }`,
-    3200
+    600
   );
+
+  // Step B: write body as plain text (no JSON wrapping — avoids parse issues)
+  log('QYREN','► Drafting article body…','qyren');
+  const body = await claude(
+    `You are QYREN writing for SaaS Pulse Media — a professional SaaS review publication. Write expert, practical, SEO-optimised content in ${STATE.style} style. Return ONLY the article body text, no JSON, no preamble.`,
+    `Write a complete ${STATE.articleLength}-word article:
+
+Title: ${meta.title}
+Category: ${STATE.lastDecision.category}
+Angle: ${STATE.lastDecision.angle}
+Target keywords (use naturally): ${kw}
+
+Requirements:
+- Use ## for H2 headings, ### for H3
+- Include numbered or bulleted lists where helpful
+- Name specific real tools with realistic pricing
+- End with a clear verdict or recommendation
+- Do NOT wrap in JSON or quotes — return plain article text only`,
+    2800
+  );
+
+  // Step C: fetch a relevant cover image from Unsplash (free, no key needed)
+  let imageUrl = '';
+  try {
+    const imgQuery = encodeURIComponent((STATE.lastDecision.target_keywords?.[0] || STATE.lastDecision.topic).split(' ').slice(0,3).join(' '));
+    const imgRes = await fetch(`https://source.unsplash.com/1200x630/?${imgQuery},technology,software`, {method:'HEAD'});
+    imageUrl = imgRes.url || '';
+  } catch(e) { log('IMG','Could not fetch image','warn'); }
+
+  const article = { ...meta, body, image: imageUrl };
 
   const post = {
     ...article,

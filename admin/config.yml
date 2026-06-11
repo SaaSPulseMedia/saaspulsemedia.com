@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: SaasPulseMedia/saaspulsemedia.com
   branch: main
 
 media_folder: "site/images/uploads"
@@ -8,16 +9,16 @@ public_folder: "/images/uploads"
 collections:
   - name: "posts"
     label: "Blog Posts"
-    folder: "site/data/individual-posts"
+    folder: "_posts"
     create: true
     slug: "{{slug}}"
-    format: "json"
-    extension: "json"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime" }
       - { label: "Category", name: "category", widget: "select", options: ["SEO Tools", "CRM", "Email Marketing", "AI Writing", "AI Tools for Business", "Digital Marketing Tips", "Productivity Guides", "Project Management", "SaaS Tool Reviews", "SEO Strategies"] }
-      - { label: "Meta Description", name: "description", widget: "string" }
       - { label: "Tags", name: "tags", widget: "list", default: [] }
-      - { label: "Key Insight", name: "key_insight", widget: "string", required: false }
+      - { label: "Meta Description", name: "description", widget: "string" }
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "Key Insight", name: "key_insight", widget: "string", required: false }
+      - { label: "Author", name: "author", widget: "string", default: "SaaS Pulse Media" }

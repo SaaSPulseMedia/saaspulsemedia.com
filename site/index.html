@@ -228,20 +228,25 @@ function cardHTML(p, featured) {
   const date = p.date ? new Date(p.date).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '';
   const words = (p.body || '').trim().split(/\s+/).length;
   const readTime = Math.max(1, Math.round(words / 200));
+  const catIcons = {'SEO Tools':'🔍','CRM':'🤝','Email Marketing':'📧','AI Writing':'✍️','AI Tools for Business':'🤖','Digital Marketing Tips':'📣','Productivity Guides':'⚡','Project Management':'📋','SaaS Tool Reviews':'⭐','SEO Strategies':'📈'};
+  const icon = catIcons[p.category] || '📊';
+  // Build a gradient placeholder with category color if no image
+  const catColors = {'SEO Tools':'#0057ff,#00c2ff','CRM':'#7c3aed,#c084fc','Email Marketing':'#059669,#34d399','AI Writing':'#dc2626,#fb923c','AI Tools for Business':'#0057ff,#7c3aed','Digital Marketing Tips':'#d97706,#fbbf24','Productivity Guides':'#0891b2,#22d3ee','Project Management':'#7c3aed,#e879f9','SaaS Tool Reviews':'#dc2626,#f87171','SEO Strategies':'#059669,#6ee7b7'};
+  const grad = catColors[p.category] || '#0057ff,#00c2ff';
   return `
     <article class="article-card${featured?' featured':''}">
       <div class="card-image">
-        ${p.image
-          ? `<img src="${p.image}" alt="${esc(p.title)}" loading="lazy">`
-          : `<div class="card-image-placeholder">📊</div>`}
+        ${p.image && p.image.startsWith('http')
+          ? `<img src="${p.image}" alt="${esc(p.title)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=card-image-placeholder style=\'background:linear-gradient(135deg,${grad});\'><span style=\'font-size:2rem\'>${icon}</span></div>'">`
+          : `<div class="card-image-placeholder" style="background:linear-gradient(135deg,${grad});display:flex;align-items:center;justify-content:center"><span style="font-size:2.5rem">${icon}</span></div>`}
       </div>
       <div class="card-body">
         <div class="card-cat">${p.category || 'General'}</div>
-        <a href="/post.html?slug=${p.slug}" class="card-title">${esc(p.title)}</a>
+        <a href="/posts/${p.slug}.html" class="card-title">${esc(p.title)}</a>
         <p class="card-excerpt">${esc(p.description || (p.body||'').substring(0,160))}</p>
         <div class="card-meta">
           <span class="card-date">${date}</span>
-          <a href="/post.html?slug=${p.slug}" class="card-read">${readTime} min read →</a>
+          <a href="/posts/${p.slug}.html" class="card-read">${readTime} min read →</a>
         </div>
       </div>
     </article>
@@ -272,6 +277,18 @@ function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 loadPosts();
+</script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/admin/";
+        });
+      }
+    });
+  }
 </script>
 </body>
 </html>
