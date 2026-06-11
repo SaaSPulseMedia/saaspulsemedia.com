@@ -7,6 +7,11 @@
   status = 200
 
 [[redirects]]
+  from = "/post.html"
+  to = "/post.html"
+  status = 200
+
+[[redirects]]
   from = "/sitemap.xml"
   to = "/sitemap.html"
   status = 200
@@ -21,15 +26,9 @@
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
     Cache-Control = "public, max-age=3600"
 
 [[headers]]
   for = "/data/*"
   [headers.values]
     Cache-Control = "public, max-age=60"
-
-[[headers]]
-  for = "/style.css"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
