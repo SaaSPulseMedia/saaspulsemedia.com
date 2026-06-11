@@ -1,0 +1,4 @@
+/post.html  /post.html  200
+/admin/*    /admin/index.html  200
+/admin      /admin/index.html  200
+/*          /404.html  404
