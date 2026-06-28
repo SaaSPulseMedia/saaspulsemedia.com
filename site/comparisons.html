@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS Tool Comparisons — SaaS Pulse Media</title>
+  <meta name="description" content="Head-to-head SaaS tool comparisons. Find out which software wins on features, pricing, and real-world use.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="/images/favicon.png">
+  <style>
+    .compare-hero{background:var(--ink);color:var(--white);padding:60px 24px}
+    .compare-hero-inner{max-width:var(--max);margin:0 auto}
+    .compare-hero h1{font-family:var(--serif);font-size:clamp(2rem,4vw,3rem);font-weight:600;letter-spacing:-.03em;margin-bottom:10px}
+    .compare-hero p{color:rgba(253,252,250,.55);font-size:.95rem;max-width:500px}
+    .compare-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;max-width:var(--max);margin:0 auto;padding:48px 24px}
+    .compare-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:.2s}
+    .compare-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--border2)}
+    .compare-card-head{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px}
+    .vs-badge{font-family:var(--mono);font-size:.6rem;background:var(--surface2);color:var(--muted);padding:2px 8px;border-radius:3px;letter-spacing:.05em}
+    .tool-pair{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.1rem;font-weight:600}
+    .vs-divider{font-family:var(--mono);font-size:.7rem;color:var(--muted);background:var(--surface2);padding:2px 7px;border-radius:3px}
+    .compare-card-body{padding:16px 20px}
+    .compare-winner{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--muted);margin-bottom:10px}
+    .winner-badge{font-family:var(--mono);font-size:.62rem;background:rgba(0,87,255,.08);color:var(--accent);border:1px solid rgba(0,87,255,.2);padding:2px 8px;border-radius:3px}
+    .compare-summary{font-size:.8rem;color:var(--muted);line-height:1.55;margin-bottom:14px}
+    .compare-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+    .compare-cta{display:block;text-align:center;padding:9px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:.8rem;font-weight:600;color:var(--ink);transition:.15s}
+    .compare-cta:hover{background:var(--accent);color:white;border-color:var(--accent)}
+    .score-row{display:flex;gap:6px;margin-bottom:8px}
+    .score-item{flex:1;text-align:center}
+    .score-val{font-family:var(--mono);font-size:1.2rem;font-weight:700;line-height:1}
+    .score-label{font-size:.6rem;color:var(--muted);margin-top:2px;font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase}
+    .score-item.winner .score-val{color:var(--accent)}
+    .request-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:32px;text-align:center;margin:0 24px 48px;max-width:var(--max);margin-left:auto;margin-right:auto}
+    .request-box h2{font-family:var(--serif);font-size:1.4rem;font-weight:600;margin-bottom:8px}
+    .request-box p{color:var(--muted);font-size:.85rem;margin-bottom:18px}
+    .request-form{display:flex;gap:10px;max-width:440px;margin:0 auto;flex-wrap:wrap}
+    .request-input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);font-size:.82rem;font-family:var(--sans);outline:none;min-width:200px}
+    .request-input:focus{border-color:var(--accent)}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <span class="logo-mark">SaaS<span>Pulse</span></span>
+      <span class="logo-tag">Media</span>
+    </a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog.html">Blog</a>
+      <a href="/comparisons.html" class="active">Comparisons</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/blog.html" class="nav-cta">Browse Articles</a>
+    </nav>
+  </div>
+</header>
+
+<div class="compare-hero">
+  <div class="compare-hero-inner">
+    <div style="font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px">Head-to-head</div>
+    <h1>SaaS Tool<br><em style="font-style:italic;color:var(--gold)">Comparisons</em></h1>
+    <p>Unbiased, detailed breakdowns of the most popular SaaS alternatives. Features, pricing, pros, cons — so you can decide with confidence.</p>
+  </div>
+</div>
+
+<div class="compare-grid" id="compare-grid">
+  <!-- Populated by JS -->
+</div>
+
+<!-- Request a comparison -->
+<div class="request-box">
+  <h2>Don't see the comparison you need?</h2>
+  <p>Tell us which tools you're deciding between and we'll write it.</p>
+  <form class="request-form" onsubmit="requestComparison(event)">
+    <input class="request-input" placeholder="e.g. Notion vs Coda" required id="compare-request">
+    <button class="btn btn-primary" type="submit">Request It</button>
+  </form>
+  <div id="request-confirm" style="display:none;margin-top:14px;color:var(--accent);font-weight:600;font-size:.85rem">✓ Thanks! We'll add it to our queue.</div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo"><span class="logo-mark">SaaS<span>Pulse</span></span></div>
+        <p>Expert reviews, comparisons, and insights on the tools powering modern businesses.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Content</div>
+        <ul class="footer-links">
+          <li><a href="/blog.html">All Articles</a></li>
+          <li><a href="/comparisons.html">Comparisons</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Site</div>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Contact</a></li>
+          <li><a href="/privacy.html">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 SaaS Pulse Media. All rights reserved.</span></div>
+    <div class="affiliate-notice"><strong style="color:rgba(253,252,250,.5)">Affiliate Disclosure:</strong> Some links are affiliate links. We may earn a commission at no extra cost to you.</div>
+  </div>
+</footer>
+
+<script>
+const COMPARISONS = [
+  { a:'Semrush', b:'Ahrefs', cat:'SEO Tools', winner:'Semrush', scores:{a:[88,72,90],b:[85,78,82]}, summary:'Semrush edges ahead for all-in-one marketers. Ahrefs wins on backlink data depth and UI simplicity.', tags:['SEO','Backlinks','Keyword Research'], slug:'semrush-vs-ahrefs' },
+  { a:'HubSpot', b:'Salesforce', cat:'CRM', winner:'HubSpot', scores:{a:[90,65,95],b:[92,55,75]}, summary:'HubSpot dominates for SMBs with its generous free tier and intuitive UX. Salesforce is the enterprise power play.', tags:['CRM','Sales','Automation'], slug:'hubspot-vs-salesforce' },
+  { a:'Mailchimp', b:'ActiveCampaign', cat:'Email Marketing', winner:'ActiveCampaign', scores:{a:[80,70,85],b:[88,60,82]}, summary:'ActiveCampaign wins on automation depth. Mailchimp is friendlier for beginners and light email senders.', tags:['Email','Automation','Newsletter'], slug:'mailchimp-vs-activecampaign' },
+  { a:'Jasper', b:'Copy.ai', cat:'AI Writing', winner:'Jasper', scores:{a:[85,60,88],b:[82,72,80]}, summary:'Jasper leads on long-form quality and brand voice consistency. Copy.ai is better value for short-form copy needs.', tags:['AI Writing','Copywriting','Content'], slug:'jasper-vs-copy-ai' },
+  { a:'Notion', b:'Coda', cat:'Productivity Guides', winner:'Notion', scores:{a:[90,75,92],b:[85,70,80]}, summary:'Notion wins on ecosystem size and templates. Coda pulls ahead for complex data and formula-heavy workflows.', tags:['Productivity','Notes','Database'], slug:'notion-vs-coda' },
+  { a:'Asana', b:'Monday.com', cat:'Project Management', winner:'Monday.com', scores:{a:[85,72,88],b:[88,68,90]}, summary:'Monday.com is more visually intuitive and customisable. Asana is better for structured task-based teams.', tags:['Project Management','Teams','Workflow'], slug:'asana-vs-monday' },
+  { a:'Surfer SEO', b:'Clearscope', cat:'SEO Strategies', winner:'Surfer SEO', scores:{a:[88,70,85],b:[85,65,88]}, summary:'Surfer SEO offers more features per pound including SERP analysis and internal linking. Clearscope is simpler but pricier.', tags:['SEO','Content Optimisation','SERP'], slug:'surfer-vs-clearscope' },
+  { a:'Zapier', b:'Make', cat:'AI Tools for Business', winner:'Make', scores:{a:[85,60,92],b:[90,78,85]}, summary:'Make (formerly Integromat) wins on power and price. Zapier wins on breadth of integrations and ease of setup.', tags:['Automation','Workflow','Integration'], slug:'zapier-vs-make' },
+];
+
+const SCORE_LABELS = ['Features','Pricing','Ease of Use'];
+
+function render() {
+  document.getElementById('compare-grid').innerHTML = COMPARISONS.map(c => {
+    const aWins = c.winner === c.a;
+    return `
+    <div class="compare-card">
+      <div class="compare-card-head">
+        <div style="flex:1">
+          <div class="vs-badge">${c.cat}</div>
+          <div class="tool-pair" style="margin-top:6px">
+            <span style="${aWins?'color:var(--accent)':''}">${c.a}</span>
+            <span class="vs-divider">VS</span>
+            <span style="${!aWins?'color:var(--accent)':''}">${c.b}</span>
+          </div>
+        </div>
+      </div>
+      <div class="compare-card-body">
+        <div class="compare-winner">
+          <span>Winner:</span>
+          <span class="winner-badge">${c.winner} ✓</span>
+        </div>
+        <div class="score-row">
+          ${SCORE_LABELS.map((l,i)=>`
+          <div class="score-item">
+            <div style="font-family:var(--mono);font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${l}</div>
+            <div style="display:flex;justify-content:center;gap:6px;align-items:center">
+              <span style="font-family:var(--mono);font-size:.9rem;font-weight:700;color:${c.scores.a[i]>=c.scores.b[i]?'var(--accent)':'var(--muted)'}">${c.scores.a[i]}</span>
+              <span style="font-size:.6rem;color:var(--muted2)">vs</span>
+              <span style="font-family:var(--mono);font-size:.9rem;font-weight:700;color:${c.scores.b[i]>c.scores.a[i]?'var(--accent)':'var(--muted)'}">${c.scores.b[i]}</span>
+            </div>
+          </div>`).join('')}
+        </div>
+        <p class="compare-summary">${c.summary}</p>
+        <div class="compare-tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <a href="/articles/${c.slug}.html" class="compare-cta">Read Full Comparison →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function requestComparison(e) {
+  e.preventDefault();
+  document.getElementById('compare-request').value = '';
+  document.getElementById('request-confirm').style.display = 'block';
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sitemap — SaaS Pulse Media</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo"><span class="logo-mark">SaaS<span>Pulse</span></span><span class="logo-tag">Media</span></a>
+    <nav><a href="/">Home</a><a href="/blog.html">Blog</a></nav>
+  </div>
+</header>
+<div style="max-width:760px;margin:0 auto;padding:52px 24px 80px">
+  <h1 style="font-family:var(--serif);font-size:1.8rem;font-weight:600;letter-spacing:-.025em;margin-bottom:6px">Sitemap</h1>
+  <p style="color:var(--muted);margin-bottom:32px;font-size:.85rem">All pages and articles on SaaS Pulse Media</p>
+
+  <div style="margin-bottom:28px">
+    <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">Core Pages</div>
+    <ul style="list-style:none">
+      <li style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <a href="/" style="color:var(--accent);font-size:.85rem">Home</a>
+        <span style="font-family:var(--mono);font-size:.65rem;color:var(--muted)">saaspulsemedia.com/</span>
+      </li>
+      <li style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <a href="/blog.html" style="color:var(--accent);font-size:.85rem">Blog</a>
+        <span style="font-family:var(--mono);font-size:.65rem;color:var(--muted)">/blog.html</span>
+      </li>
+      <li style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <a href="/comparisons.html" style="color:var(--accent);font-size:.85rem">Comparisons</a>
+        <span style="font-family:var(--mono);font-size:.65rem;color:var(--muted)">/comparisons.html</span>
+      </li>
+      <li style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <a href="/contact.html" style="color:var(--accent);font-size:.85rem">Contact</a>
+        <span style="font-family:var(--mono);font-size:.65rem;color:var(--muted)">/contact.html</span>
+      </li>
+      <li style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <a href="/privacy.html" style="color:var(--accent);font-size:.85rem">Privacy Policy</a>
+        <span style="font-family:var(--mono);font-size:.65rem;color:var(--muted)">/privacy.html</span>
+      </li>
+    </ul>
+  </div>
+
+  <div>
+    <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">Articles (<span id="article-count">0</span>)</div>
+    <ul style="list-style:none" id="article-list"></ul>
+  </div>
+</div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-bottom"><span>© 2026 SaaS Pulse Media.</span></div>
+  </div>
+</footer>
+<script>
+async function load() {
+  try {
+    const res = await fetch('/data/posts.json');
+    const posts = await res.json();
+    document.getElementById('article-count').textContent = posts.length;
+    document.getElementById('article-list').innerHTML = posts.map(p => `
+      <li style="padding:7px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px">
+        <a href="/articles/${p.slug}.html" style="color:var(--accent);font-size:.83rem;flex:1">${p.title||p.slug}</a>
+        <span style="font-family:var(--mono);font-size:.6rem;color:var(--muted2);white-space:nowrap">${(p.date||'').substring(0,10)}</span>
+      </li>
+    `).join('');
+  } catch(e) { document.getElementById('article-list').innerHTML = '<li style="color:var(--muted);font-size:.8rem;padding:12px 0">No articles yet.</li>'; }
+}
+load();
+</script>
+</body>
+</html>

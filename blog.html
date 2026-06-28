@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — SaaS Pulse Media</title>
+  <meta name="description" content="Expert SaaS reviews, comparisons, and insights. Browse all articles across SEO, CRM, email marketing, AI tools, and more.">
+  <link rel="canonical" href="https://saaspulsemedia.com/blog.html">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo"><span class="logo-mark">SaaS<span>Pulse</span></span><span class="logo-tag">Media</span></a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog.html" class="active">Blog</a>
+      <a href="/comparisons.html">Comparisons</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/blog.html" class="nav-cta">Browse Articles</a>
+    </nav>
+  </div>
+</header>
+
+<div class="blog-header">
+  <div class="blog-header-inner">
+    <h1 class="blog-header-title">All Articles</h1>
+    <p class="blog-header-sub">Expert SaaS reviews, comparisons and insights — updated twice a week</p>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <div class="filter-bar-inner" id="filter-bar">
+    <button class="filter-btn active" data-cat="all" onclick="filterPosts('all',this)">All</button>
+  </div>
+</div>
+
+<div class="blog-layout">
+  <main class="blog-main">
+    <div style="margin-bottom:24px;position:relative">
+      <input id="search-input" type="text" placeholder="Search articles…" oninput="searchPosts(this.value)"
+        style="width:100%;padding:11px 16px 11px 40px;border:1px solid var(--border);border-radius:var(--r);font-size:.85rem;font-family:var(--sans);outline:none;background:var(--white);color:var(--ink);transition:.2s"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)">⌕</span>
+      <span id="search-count" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:.65rem;color:var(--muted)"></span>
+    </div>
+    <div id="posts-grid" class="articles-grid wide"></div>
+    <div id="pagination" style="display:flex;gap:6px;justify-content:center;margin-top:32px;flex-wrap:wrap"></div>
+  </main>
+
+  <aside class="blog-sidebar">
+    <div class="newsletter-widget">
+      <div class="newsletter-title">Stay in the loop</div>
+      <p class="newsletter-sub">Twice-weekly SaaS insights. No spam, ever.</p>
+      <form class="newsletter-form" onsubmit="subNewsletter(event)">
+        <input class="newsletter-input" type="email" placeholder="your@email.com" required>
+        <button class="newsletter-submit" type="submit">Subscribe Free →</button>
+      </form>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Categories</div>
+      <ul class="sidebar-cats" id="sidebar-cats"></ul>
+    </div>
+    <div class="sidebar-card">
+      <div class="sidebar-title">Most Read</div>
+      <div id="sidebar-top"></div>
+    </div>
+  </aside>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand"><div class="logo"><span class="logo-mark">SaaS<span>Pulse</span></span></div><p>Expert reviews, comparisons, and insights on the tools powering modern businesses.</p></div>
+      <div><div class="footer-col-title">Content</div><ul class="footer-links"><li><a href="/blog.html">All Articles</a></li><li><a href="/comparisons.html">Comparisons</a></li></ul></div>
+      <div><div class="footer-col-title">Site</div><ul class="footer-links"><li><a href="/contact.html">Contact</a></li><li><a href="/privacy.html">Privacy</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 SaaS Pulse Media. All rights reserved.</span></div>
+    <div class="affiliate-notice"><strong style="color:rgba(253,252,250,.5)">Affiliate Disclosure:</strong> Some links are affiliate links. We may earn a commission at no extra cost to you.</div>
+  </div>
+</footer>
+
+<script>
+const PER_PAGE = 12;
+const CATS = {'SEO Tools':'🔍','CRM':'🤝','Email Marketing':'📧','AI Writing':'✍️','AI Tools for Business':'🤖','Digital Marketing Tips':'📣','Productivity Guides':'⚡','Project Management':'📋','SaaS Tool Reviews':'⭐','SEO Strategies':'📈'};
+const GRADS = {'SEO Tools':'#0057ff,#00c2ff','CRM':'#7c3aed,#c084fc','Email Marketing':'#059669,#34d399','AI Writing':'#dc2626,#fb923c','AI Tools for Business':'#0057ff,#7c3aed','Digital Marketing Tips':'#d97706,#fbbf24','Productivity Guides':'#0891b2,#22d3ee','Project Management':'#7c3aed,#e879f9','SaaS Tool Reviews':'#dc2626,#f87171','SEO Strategies':'#059669,#6ee7b7'};
+let ALL=[], FILTERED=[], PAGE=1, CAT='all', QUERY='';
+
+async function init() {
+  try {
+    const r = await fetch('/data/posts.json?t='+Date.now());
+    ALL = await r.json();
+  } catch(e) { ALL=[]; }
+  buildFilters(); buildSidebar();
+  const cat = new URLSearchParams(location.search).get('cat');
+  if(cat) filterPosts(cat, null); else applyFilters();
+}
+
+function buildFilters() {
+  const cats = [...new Set(ALL.map(p=>p.category).filter(Boolean))].sort();
+  const bar = document.getElementById('filter-bar');
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className='filter-btn'; btn.dataset.cat=slugify(c); btn.textContent=c;
+    btn.onclick=()=>filterPosts(slugify(c),btn); bar.appendChild(btn);
+  });
+}
+
+function buildSidebar() {
+  const counts={};
+  ALL.forEach(p=>{const c=p.category||'General';counts[c]=(counts[c]||0)+1;});
+  document.getElementById('sidebar-cats').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1])
+    .map(([c,n])=>`<li><a href="/blog.html?cat=${slugify(c)}" onclick="filterPosts('${slugify(c)}',null);return false">${c}</a><span>${n}</span></li>`).join('');
+  document.getElementById('sidebar-top').innerHTML=ALL.slice(0,5).map(p=>`
+    <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <a href="${p.url||'/articles/'+p.slug+'.html'}" style="font-size:.8rem;font-weight:600;color:var(--ink);line-height:1.4;display:block;transition:color .15s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--ink)'">${esc(p.title)}</a>
+      <div style="font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-top:3px">${p.category||''}</div>
+    </div>`).join('');
+}
+
+function filterPosts(cat,btn) {
+  CAT=cat; QUERY=''; PAGE=1;
+  document.getElementById('search-input').value='';
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  else { const b=document.querySelector(`[data-cat="${cat}"]`); if(b)b.classList.add('active'); }
+  if(cat==='all') document.querySelector('[data-cat="all"]')?.classList.add('active');
+  applyFilters();
+}
+
+function searchPosts(q) { QUERY=q.toLowerCase().trim(); PAGE=1; applyFilters(); }
+
+function applyFilters() {
+  FILTERED=ALL.filter(p=>{
+    const cm=CAT==='all'||slugify(p.category||'')===CAT;
+    const sm=!QUERY||(p.title||'').toLowerCase().includes(QUERY)||(p.description||'').toLowerCase().includes(QUERY)||(p.tags||[]).some(t=>t.toLowerCase().includes(QUERY));
+    return cm&&sm;
+  });
+  const c=document.getElementById('search-count');
+  c.textContent=FILTERED.length!==ALL.length?`${FILTERED.length} results`:'';
+  renderGrid(); renderPagination();
+}
+
+function renderGrid() {
+  const el=document.getElementById('posts-grid');
+  const slice=FILTERED.slice((PAGE-1)*PER_PAGE,PAGE*PER_PAGE);
+  if(!slice.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);font-family:var(--mono)">No articles found.</div>';return;}
+  el.innerHTML=slice.map(p=>{
+    const date=p.date?new Date(p.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+    const link=p.url||`/articles/${p.slug}.html`;
+    const grad=GRADS[p.category]||'#0057ff,#00c2ff';
+    const icon=CATS[p.category]||'📊';
+    return `<article class="article-card">
+      <div class="card-image">
+        ${p.image&&p.image.startsWith('http')
+          ?`<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.innerHTML='<div class=card-image-placeholder style=background:linear-gradient(135deg,${grad})>${icon}</div>'">`
+          :`<div class="card-image-placeholder" style="background:linear-gradient(135deg,${grad});display:flex;align-items:center;justify-content:center;font-size:2rem">${icon}</div>`}
+      </div>
+      <div class="card-body">
+        <div class="card-cat">${esc(p.category||'General')}</div>
+        <a href="${link}" class="card-title">${esc(p.title)}</a>
+        <p class="card-excerpt">${esc((p.description||'').substring(0,160))}</p>
+        <div class="card-meta"><span class="card-date">${date}</span><a href="${link}" class="card-read">Read →</a></div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+function renderPagination() {
+  const el=document.getElementById('pagination');
+  const pages=Math.ceil(FILTERED.length/PER_PAGE);
+  if(pages<=1){el.innerHTML='';return;}
+  let h='';
+  if(PAGE>1)h+=`<button onclick="goPage(${PAGE-1})" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--white);font-size:.78rem;cursor:pointer">← Prev</button>`;
+  for(let i=1;i<=pages;i++)h+=`<button onclick="goPage(${i})" style="padding:7px 12px;border:1px solid ${i===PAGE?'var(--accent)':'var(--border)'};border-radius:var(--r);background:${i===PAGE?'var(--accent)':'var(--white)'};color:${i===PAGE?'white':'var(--ink)'};font-size:.78rem;cursor:pointer;font-weight:${i===PAGE?'600':'400'}">${i}</button>`;
+  if(PAGE<pages)h+=`<button onclick="goPage(${PAGE+1})" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--white);font-size:.78rem;cursor:pointer">Next →</button>`;
+  el.innerHTML=h;
+}
+function goPage(p){PAGE=p;renderGrid();renderPagination();window.scrollTo({top:0,behavior:'smooth'});}
+function subNewsletter(e){e.preventDefault();e.target.innerHTML='<div style="text-align:center;font-weight:600">✓ Subscribed!</div>';}
+function slugify(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+init();
+</script>
+</body>
+</html>
