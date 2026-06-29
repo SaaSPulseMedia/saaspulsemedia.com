@@ -1,12 +1,35 @@
 [
   {
+    "slug": "how-to-build-a-content-strategy-using-free-seo-tools-in-2026-xlwh",
+    "title": "How to Build a Content Strategy Using Free SEO Tools in 2026",
+    "category": "SEO Strategies",
+    "date": "2026-06-29T22:13:04.673Z",
+    "description": "Learn how to build a winning content strategy using free SEO tools in 2026. Discover keyword research, competitor analysis, and content planning tactics that cost nothing.",
+    "author": "SaaS Pulse Media",
+    "tags": [
+      "SEO Tools",
+      "Content Strategy",
+      "SEO Planning",
+      "Free SEO Resources"
+    ],
+    "key_insight": "A comprehensive content strategy can be built entirely with free SEO tools by combining Google Search Console for performance data, free keyword planners for topic discovery, and strategic competitor analysis for content gap identification.",
+    "image": "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&q=80",
+    "url": "/articles/how-to-build-a-content-strategy-using-free-seo-tools-in-2026-xlwh.html"
+  },
+  {
     "slug": "best-seo-tools-2026",
     "title": "The 9 Best SEO Tools in 2026 — Ranked and Reviewed",
     "category": "SEO Tools",
     "date": "2026-06-01T08:00:00Z",
     "description": "After testing dozens of platforms, here are the SEO tools actually worth your money in 2026 — from keyword research to technical audits.",
     "author": "SaaS Pulse Media",
-    "tags": ["SEO", "keyword research", "backlinks", "Semrush", "Ahrefs"],
+    "tags": [
+      "SEO",
+      "keyword research",
+      "backlinks",
+      "Semrush",
+      "Ahrefs"
+    ],
     "key_insight": "The best SEO tool is the one your team will actually use consistently — features matter less than adoption.",
     "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
     "url": "/articles/best-seo-tools-2026.html"
@@ -18,7 +41,12 @@
     "date": "2026-05-28T08:00:00Z",
     "description": "HubSpot's free CRM has been the default choice for SMBs for years. But is it still the right pick in 2026, or have competitors caught up?",
     "author": "SaaS Pulse Media",
-    "tags": ["CRM", "HubSpot", "sales", "free tools"],
+    "tags": [
+      "CRM",
+      "HubSpot",
+      "sales",
+      "free tools"
+    ],
     "key_insight": "HubSpot's free tier remains the most generous in CRM — but the paid tiers are where you'll feel the price pressure most acutely.",
     "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     "url": "/articles/hubspot-crm-review-2026.html"
@@ -30,7 +58,13 @@
     "date": "2026-05-22T08:00:00Z",
     "description": "From list building to advanced automation, these are the email marketing tools worth using in 2026 — tested across deliverability, UX, and value.",
     "author": "SaaS Pulse Media",
-    "tags": ["email marketing", "Mailchimp", "ActiveCampaign", "Klaviyo", "automation"],
+    "tags": [
+      "email marketing",
+      "Mailchimp",
+      "ActiveCampaign",
+      "Klaviyo",
+      "automation"
+    ],
     "key_insight": "Deliverability is the metric most email tools hide — always run a test before committing to a platform at scale.",
     "image": "https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=800&q=80",
     "url": "/articles/best-email-marketing-tools-2026.html"
@@ -42,7 +76,13 @@
     "date": "2026-05-15T08:00:00Z",
     "description": "The AI writing tool market has matured dramatically. Here's how the leading platforms compare on quality, speed, and value in 2026.",
     "author": "SaaS Pulse Media",
-    "tags": ["AI writing", "Jasper", "Copy.ai", "Claude", "content creation"],
+    "tags": [
+      "AI writing",
+      "Jasper",
+      "Copy.ai",
+      "Claude",
+      "content creation"
+    ],
     "key_insight": "AI writing tools are most valuable as a first-draft accelerator — not a replacement for editorial judgment.",
     "image": "https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80",
     "url": "/articles/ai-writing-tools-comparison-2026.html"
@@ -54,7 +94,12 @@
     "date": "2026-05-08T08:00:00Z",
     "description": "Both Notion and Coda promise to replace your stack of disconnected tools. After using both for six months, here's what we actually think.",
     "author": "SaaS Pulse Media",
-    "tags": ["Notion", "Coda", "productivity", "knowledge management"],
+    "tags": [
+      "Notion",
+      "Coda",
+      "productivity",
+      "knowledge management"
+    ],
     "key_insight": "Notion wins on flexibility and community; Coda wins on computational power. Choose based on whether you need a wiki or a database.",
     "image": "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80",
     "url": "/articles/notion-vs-coda-2026.html"
