@@ -1,0 +1,48 @@
+name: QYREN Auto Publisher
+
+on:
+  schedule:
+    - cron: '0 8 * * 2'
+    - cron: '0 8 * * 5'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Optional topic (leave blank for auto)'
+        required: false
+        default: ''
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run QYREN Publisher
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          MANUAL_TOPIC: ${{ github.event.inputs.topic }}
+        run: node .github/scripts/qyren_publish.js
+
+      - name: Commit and push new article
+        run: |
+          git config --local user.email "qyren@saaspulsemedia.com"
+          git config --local user.name "QYREN Auto Publisher"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "QYREN: auto-publish $(date +'%Y-%m-%d')"
+            git push
+          fi
