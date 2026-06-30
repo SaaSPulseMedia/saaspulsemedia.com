@@ -15,17 +15,70 @@ const STYLE = 'practical and data-driven';
 const ARTICLE_LENGTH = '1000-1400';
 
 const CATEGORY_IMAGES = {
-  'SEO Tools': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
-  'CRM': 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80',
-  'Email Marketing': 'https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=800&q=80',
-  'AI Writing': 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80',
-  'AI Tools for Business': 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80',
-  'Digital Marketing Tips': 'https://images.unsplash.com/photo-1432888622747-4eb9a8f5a07d?w=800&q=80',
-  'Productivity Guides': 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80',
-  'Project Management': 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80',
-  'SaaS Tool Reviews': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
-  'SEO Strategies': 'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&q=80',
+  'SEO Tools': [
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+    'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=800&q=80',
+    'https://images.unsplash.com/photo-1432888622747-4eb9a8f5a07d?w=800&q=80',
+  ],
+  'CRM': [
+    'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80',
+    'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80',
+    'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&q=80',
+  ],
+  'Email Marketing': [
+    'https://images.unsplash.com/photo-1596526131083-e8c633c948d2?w=800&q=80',
+    'https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=800&q=80',
+    'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80',
+  ],
+  'AI Writing': [
+    'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=800&q=80',
+    'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80',
+    'https://images.unsplash.com/photo-1655720828018-edd2daec9349?w=800&q=80',
+  ],
+  'AI Tools for Business': [
+    'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80',
+    'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=800&q=80',
+    'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80',
+  ],
+  'Digital Marketing Tips': [
+    'https://images.unsplash.com/photo-1432888622747-4eb9a8f5a07d?w=800&q=80',
+    'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=80',
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+  ],
+  'Productivity Guides': [
+    'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=80',
+    'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80',
+    'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&q=80',
+  ],
+  'Project Management': [
+    'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80',
+    'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&q=80',
+    'https://images.unsplash.com/photo-1531538606174-0f90ff5dce83?w=800&q=80',
+  ],
+  'SaaS Tool Reviews': [
+    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+    'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=800&q=80',
+    'https://images.unsplash.com/photo-1572177812156-58036aae439c?w=800&q=80',
+  ],
+  'SEO Strategies': [
+    'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&q=80',
+    'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=800&q=80',
+    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+  ],
 };
+
+// Deterministic pick: same slug always gets the same image (no flicker on rebuilds),
+// but different articles in the same category get visual variety.
+function pickCategoryImage(category, seed) {
+  const list = CATEGORY_IMAGES[category] || CATEGORY_IMAGES['SaaS Tool Reviews'];
+  if (!seed) return list[0];
+  let hash = 5381;
+  for (let i = 0; i < seed.length; i++) {
+    hash = ((hash * 33) ^ seed.charCodeAt(i)) >>> 0;
+  }
+  return list[hash % list.length];
+}
 
 const SEED_TOPICS = [
   { topic: 'Best AI Tools for Small Business in 2026', category: 'AI Tools for Business' },
@@ -400,7 +453,7 @@ If this article's main subject is Notion AI or Nutshell CRM (e.g. a dedicated re
 
   // Build article object
   const slug = slugify(meta.title || decision.topic) + '-' + Date.now().toString(36).slice(-4);
-  const image = CATEGORY_IMAGES[decision.category] || CATEGORY_IMAGES['SaaS Tool Reviews'];
+  const image = pickCategoryImage(decision.category, slug);
   const now = new Date().toISOString();
 
   const article = {
