@@ -367,7 +367,7 @@ Return JSON:
   log(`Title: "${meta.title}"`);
 
   // Write body
-  log('Writing article body...');
+ log('Writing article body...');
   const body = await callClaude(
     `You are QYREN writing for SaaS Pulse Media. Write expert, practical, SEO-optimised content in ${STYLE} style. The current year is 2026 — always reference 2026, never 2025. Return ONLY the article body text, no JSON, no preamble, no title at the top.`,
     `Write a complete ${ARTICLE_LENGTH}-word article:
