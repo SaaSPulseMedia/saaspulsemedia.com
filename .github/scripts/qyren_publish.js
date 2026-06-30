@@ -369,7 +369,22 @@ Return JSON:
   // Write body
  log('Writing article body...');
   const body = await callClaude(
-    `You are QYREN writing for SaaS Pulse Media. Write expert, practical, SEO-optimised content in ${STYLE} style. The current year is 2026 — always reference 2026, never 2025. Return ONLY the article body text, no JSON, no preamble, no title at the top.`,
+    `You are QYREN writing for SaaS Pulse Media. Write expert, practical, SEO-optimised content in ${STYLE} style. The current year is 2026 — always reference 2026, never 2025. Return ONLY the article body text, no JSON, no preamble, no title at the top.
+
+IMPORTANT — affiliate linking rules:
+
+GENERAL MENTIONS (tool comes up as one of several options in a roundup/list article):
+- If you mention "Notion AI" or "Notion" anywhere, hyperlink the FIRST mention only: [Notion AI](https://affiliate.notion.so/swlxlbd3nd81)
+- If you mention "Nutshell" or "Nutshell CRM" anywhere, hyperlink the FIRST mention only: [Nutshell CRM](https://try.nutshell.com/oq162q0gnc5w)
+- Leave every other mention as plain text.
+
+DEDICATED ARTICLES (the article's main subject IS Notion AI or Nutshell CRM — e.g. a review, a "X vs Y" comparison, or a "best CRM/productivity tool" roundup where one of these is the top pick):
+- Link the tool name EVERY TIME it appears as a clickable call-to-action moment — specifically: in the introduction, after each major feature section, in the pricing section, and in the final verdict/conclusion.
+- Use natural, varied anchor text across these links — not just the bare tool name every time. Examples: [Nutshell CRM](https://try.nutshell.com/oq162q0gnc5w), [try Nutshell free](https://try.nutshell.com/oq162q0gnc5w), [start your Nutshell trial](https://try.nutshell.com/oq162q0gnc5w). Same pattern for Notion AI with https://affiliate.notion.so/swlxlbd3nd81.
+- Always include one clear, standalone call-to-action sentence near the end, just before the verdict, such as: "Ready to try it yourself? [Start your free Nutshell trial here](https://try.nutshell.com/oq162q0gnc5w)." or "[Try Notion AI free](https://affiliate.notion.so/swlxlbd3nd81) and see the difference in your team's workflow."
+- The final verdict paragraph must also contain one link.
+- Never invent or alter these URLs — use them exactly as given.
+- Still write an honest, balanced review covering real pros, cons, and pricing — credibility matters more than link count for actually converting readers.`,
     `Write a complete ${ARTICLE_LENGTH}-word article:
 
 Title: ${meta.title}
@@ -377,7 +392,9 @@ Category: ${decision.category}
 Angle: ${decision.angle}
 Keywords: ${(decision.target_keywords || []).join(', ')}
 
-Use ## for H2 headings, ### for H3. Include lists. Name real tools with real pricing. End with a clear verdict.`,
+Use ## for H2 headings, ### for H3. Include lists. Name real tools with real pricing. End with a clear verdict.
+
+If this article's main subject is Notion AI or Nutshell CRM (e.g. a dedicated review, a head-to-head comparison, or a "best CRM/productivity tools" roundup naming them as the top pick), follow the DEDICATED ARTICLES linking rules above. Otherwise, if they come up only as one of several tools mentioned in passing, follow the GENERAL MENTIONS rules.`,
     2800);
   log(`Body: ${body.split(/\s+/).length} words`);
 
