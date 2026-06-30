@@ -46,28 +46,7 @@ jobs:
             git commit -m "QYREN: auto-publish $(date +'%Y-%m-%d')"
             git push
           fi
-          - name: Commit and push new article
-        run: |
-          git config --local user.email "qyren@saaspulsemedia.com"
-          git config --local user.name "QYREN Auto Publisher"
-          git add -A
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "QYREN: auto-publish $(date +'%Y-%m-%d')"
-            git push
-          fi
-          - name: Commit and push new article
-        run: |
-          git config --local user.email "qyren@saaspulsemedia.com"
-          git config --local user.name "QYREN Auto Publisher"
-          git add -A
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "QYREN: auto-publish $(date +'%Y-%m-%d')"
-            git push
-          fi
+          
       - name: Post to social media
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
