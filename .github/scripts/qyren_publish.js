@@ -522,7 +522,14 @@ Return JSON:
     JSON.stringify({ article_title: article.title, article_url: `https://saaspulsemedia.com/articles/${slug}.html`, ...social, created_at: now }, null, 2)
   );
   log('Social posts saved');
-
+// Regenerate sitemap.xml
+  try {
+    const { execSync } = require('child_process');
+    execSync('node .github/scripts/generate_sitemap.js', { stdio: 'inherit' });
+    log('sitemap.xml updated');
+  } catch(e) {
+    log('Sitemap generation failed (non-fatal): ' + e.message);
+  }
   log('');
   log('════════════════════════════════');
   log(`✓ PUBLISHED: "${article.title}"`);
