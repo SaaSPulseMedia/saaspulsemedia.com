@@ -429,6 +429,8 @@ IMPORTANT — affiliate linking rules:
 GENERAL MENTIONS (tool comes up as one of several options in a roundup/list article):
 - If you mention "Notion AI" or "Notion" anywhere, hyperlink the FIRST mention only: [Notion AI](https://affiliate.notion.so/swlxlbd3nd81)
 - If you mention "Nutshell" or "Nutshell CRM" anywhere, hyperlink the FIRST mention only: [Nutshell CRM](https://try.nutshell.com/oq162q0gnc5w)
+- If you mention "Pipedrive" anywhere, hyperlink the FIRST mention only: [Pipedrive](https://www.pipedrive.com/taf/W9SCGJ)
+- For dedicated Pipedrive articles (reviews, comparisons), follow the DEDICATED ARTICLES rules — multiple strategic links with varied anchor text and a CTA near the verdict.
 - Leave every other mention as plain text.
 
 DEDICATED ARTICLES (the article's main subject IS Notion AI or Nutshell CRM — e.g. a review, a "X vs Y" comparison, or a "best CRM/productivity tool" roundup where one of these is the top pick):
