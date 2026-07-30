@@ -427,16 +427,18 @@ Return JSON:
 IMPORTANT — affiliate linking rules:
 
 GENERAL MENTIONS (tool comes up as one of several options in a roundup/list article):
-- If you mention "Notion AI" or "Notion" anywhere, hyperlink the FIRST mention only: [Notion AI](https://affiliate.notion.so/swlxlbd3nd81)
-- If you mention "Nutshell" or "Nutshell CRM" anywhere, hyperlink the FIRST mention only: [Nutshell CRM](https://try.nutshell.com/oq162q0gnc5w)
-- If you mention "Pipedrive" anywhere, hyperlink the FIRST mention only: [Pipedrive](https://www.pipedrive.com/taf/W9SCGJ)
-- For dedicated Pipedrive articles (reviews, comparisons), follow the DEDICATED ARTICLES rules — multiple strategic links with varied anchor text and a CTA near the verdict.
+- If you mention "Notion AI" or "Notion" anywhere, hyperlink the FIRST mention only: [Notion AI](https://saaspulsemedia.com/go/notion)
+- If you mention "Nutshell" or "Nutshell CRM" anywhere, hyperlink the FIRST mention only: [Nutshell CRM](https://saaspulsemedia.com/go/nutshell)
+- If you mention "Pipedrive" anywhere, hyperlink the FIRST mention only: [Pipedrive](https://saaspulsemedia.com/go/pipedrive)
 - Leave every other mention as plain text.
 
-DEDICATED ARTICLES (the article's main subject IS Notion AI or Nutshell CRM — e.g. a review, a "X vs Y" comparison, or a "best CRM/productivity tool" roundup where one of these is the top pick):
+DEDICATED ARTICLES (the article's main subject IS Notion AI, Nutshell CRM, or Pipedrive — e.g. a review, a "X vs Y" comparison, or a "best CRM/productivity tool" roundup where one of these is the top pick):
 - Link the tool name EVERY TIME it appears as a clickable call-to-action moment — specifically: in the introduction, after each major feature section, in the pricing section, and in the final verdict/conclusion.
-- Use natural, varied anchor text across these links — not just the bare tool name every time. Examples: [Nutshell CRM](https://try.nutshell.com/oq162q0gnc5w), [try Nutshell free](https://try.nutshell.com/oq162q0gnc5w), [start your Nutshell trial](https://try.nutshell.com/oq162q0gnc5w). Same pattern for Notion AI with https://affiliate.notion.so/swlxlbd3nd81.
-- Always include one clear, standalone call-to-action sentence near the end, just before the verdict, such as: "Ready to try it yourself? [Start your free Nutshell trial here](https://try.nutshell.com/oq162q0gnc5w)." or "[Try Notion AI free](https://affiliate.notion.so/swlxlbd3nd81) and see the difference in your team's workflow."
+- Use natural, varied anchor text across these links — not just the bare tool name every time.
+- For Notion AI use: [Notion AI](https://saaspulsemedia.com/go/notion), [try Notion AI free](https://saaspulsemedia.com/go/notion), [start your Notion AI trial](https://saaspulsemedia.com/go/notion)
+- For Nutshell use: [Nutshell CRM](https://saaspulsemedia.com/go/nutshell), [try Nutshell free](https://saaspulsemedia.com/go/nutshell), [start your Nutshell trial](https://saaspulsemedia.com/go/nutshell)
+- For Pipedrive use: [Pipedrive](https://saaspulsemedia.com/go/pipedrive), [try Pipedrive free](https://saaspulsemedia.com/go/pipedrive), [start your Pipedrive trial](https://saaspulsemedia.com/go/pipedrive)
+- Always include one clear standalone CTA near the end, just before the verdict. Example: "Ready to try it yourself? [Start your free Nutshell trial here](https://saaspulsemedia.com/go/nutshell)."
 - The final verdict paragraph must also contain one link.
 - Never invent or alter these URLs — use them exactly as given.
 - Still write an honest, balanced review covering real pros, cons, and pricing — credibility matters more than link count for actually converting readers.`,
